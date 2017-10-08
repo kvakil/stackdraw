@@ -62,9 +62,9 @@ interface Renderer {
     newFrame(): void;
 
     /**
-     * Adds a new frame, whose content is the same as the current frame.
+     * Adds a new frame, whose content is the same as the active frame.
      */
-    newFrameFromLast(): void;
+    newFrameFromActive(): void;
 
     /**
      * Sets the active frame to the given frame number.
