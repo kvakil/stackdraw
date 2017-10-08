@@ -27,8 +27,6 @@ interface Renderer {
      * Remove the object with the given `id` from the current frame.
      * If the object does not exist, nothing happens. If this behavior is not
      * desired, existence can be checked with {@link exists}.
-     * 
-     * @see {@link exists}
      *
      * @param {string} id - the id of the object to check
      */
@@ -45,7 +43,7 @@ interface Renderer {
     /**
      * Export the current frame to a data URI.
      * 
-     * @return a valid data URI representing the current frame.
+     * @return {string} a valid data URI representing the current frame.
      */
     export(): string;
 
@@ -54,26 +52,26 @@ interface Renderer {
      * is visually similar to calling {@link export} on each frame and then
      * stitching the resulting frames together.
      * 
-     * @return a valid data URI representing all frames.
+     * @return {string} a valid data URI representing all frames.
      */
     exportAll(): string;
 
     /**
      * Adds a new frame.
      */
-    addFrame(): void;
+    newFrame(): void;
 
     /**
      * Adds a new frame, whose content is the same as the current frame.
      */
-    addFrameFromLast(): void;
+    newFrameFromLast(): void;
 
     /**
      * Sets the active frame to the given frame number.
      * 
-     * If the given frame number is not a valid frame number, no effect occurs.
-     * If this behavior is not desired, {@link getFrameCount} can be used to
-     * to check if the frame number is valid.
+     * If the given frame number is not a valid frame number, the behavior is
+     * left undefined and may cause an error. {@link getFrameCount} can be
+     * used to check if the frame number is valid.
      * 
      * @param {number} n - the frame number to set as active.
      */
@@ -82,6 +80,8 @@ interface Renderer {
     /**
      * Returns the number of frames. This includes the last frame, which might
      * not have been finalized yet.
+     * 
+     * @returns {number} the number of frames
      */
     getFrameCount(): number;
 }
