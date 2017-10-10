@@ -1,6 +1,8 @@
 import FrameObject from '../FrameObject';
 
 export default class Caption implements FrameObject {
-    kind: string = typeof this;
+    constructor(caption: string) {
+        this.caption = caption;
+    }
     caption: string;
 }

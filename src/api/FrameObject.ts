@@ -1,3 +1,1 @@
-export default interface FrameObject {
-    kind: string;
-}
+export default interface FrameObject {}
