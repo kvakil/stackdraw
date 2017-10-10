@@ -72,9 +72,12 @@ it('can deal with very long lengths', () => {
     expect(result.errors).toHaveLength(0);
 
     const plaintext = dataURIToPlaintext(result.dataURI);
-    expect(plaintext).not.toBeNull();
-    if (plaintext != null) {
-        expect(plaintext.split('\n').every(line => line.length === LONG + 4 || line.length === 0)).toBeTruthy();
+
+    if (plaintext == null) {
+        expect(plaintext).not.toBeNull();
+    } else {
+        const nonemptyLines = plaintext.split('\n').filter(line => line.length > 0);
+        expect(nonemptyLines.every(line => line.length === LONG + 4)).toBeTruthy();
     }
 });
 
