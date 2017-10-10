@@ -1,16 +1,13 @@
-/**
- * A map from property names to their values.
- */
-export type PropertyMap = Map<String, String>;
+import FrameObject from './FrameObject';
 
 /**
  * Describes the objects in the current scene.
  */
-export class Frame {
-    private objects: {[id: string]: PropertyMap};
+export default class Frame {
+    private objects: {[id: string]: FrameObject};
 
     /**
-     * Change an object `id` to have the given properties in the given frame.
+     * Change an object `id` equal to the FrameObject the given frame.
      * 
      * If the object does not exist, it is created. If this behavior is not
      * desired, existence can be checked with {@link exists}.
@@ -21,9 +18,9 @@ export class Frame {
      * should document properties and their effects.
      *
      * @param {string} id - the id of the object.
-     * @param {object} props - the properties to set.
+     * @param {object} props - the FrameObject to set.
      */
-    change(id: string, props: PropertyMap): void {
+    change(id: string, props: FrameObject): void {
         this.objects[id] = props;
     }
 
@@ -49,13 +46,13 @@ export class Frame {
     }
 
     /**
-     * Outputs a map from objects to their properties.
+     * Outputs a map from ids to the objects.
      * 
      * @see Renderer
      * 
-     * @return {Readonly<{[id: string]: Readonly<PropertyMap>}>} map of id to properties
+     * @return {Readonly<{[id: string]: Readonly<FrameObject>}>} map of id to objects
      */
-    dump(): Readonly<{[id: string]: Readonly<PropertyMap>}> {
+    dump(): Readonly<{[id: string]: Readonly<FrameObject>}> {
         return this.objects;
     }
 }
