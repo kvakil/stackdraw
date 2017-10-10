@@ -6,6 +6,10 @@ import FrameObject from './FrameObject';
 export default class Frame {
     private objects: {[id: string]: FrameObject};
 
+    constructor() {
+        this.objects = {};
+    }
+
     /**
      * Change an object `id` equal to the FrameObject the given frame.
      * 
