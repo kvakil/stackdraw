@@ -77,3 +77,22 @@ it('can deal with very long lengths', () => {
         expect(plaintext.split('\n').every(line => line.length === LONG + 4 || line.length === 0)).toBeTruthy();
     }
 });
+
+it('can deal with unordered stack frames', () => {
+    const frame = new Frame();
+    frame.change('0', new StackItem(1, 'ebx'));
+    frame.change('1', new StackItem(0, 'eax'));
+    
+    const expectedResult = [
+        '',
+        '+-----+',
+        '| eax |',
+        '| ebx |',
+        '+-----+',
+        ''
+    ].join('\n');
+
+    const result = (new PlaintextRenderer()).export(frame);
+    expect(result.errors).toHaveLength(0);
+    expect(dataURIToPlaintext(result.dataURI)).toBe(expectedResult);
+});
