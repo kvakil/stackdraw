@@ -7,11 +7,14 @@ import StackItem from '../fos/StackItem';
 class RendererState {    
     private static readonly TOO_MANY_CAPTIONS: string =
         'Too many captions: only one allowed.';
+    private static readonly EXTRA_SPACES = 2;
+
     private objects: FrameObject[];
     private errors: Error[];
 
     constructor(objects: FrameObject[]) {
         this.objects = objects;
+        this.errors = [];
     }
 
     finalize(): string {
@@ -35,7 +38,7 @@ class RendererState {
 
     private getStackLayout(): string {
         const items = this.objects.filter((x: FrameObject): x is StackItem => x instanceof StackItem)
-                                  .sort((a, b) => b.location - a.location);
+                                  .sort((a, b) => a.location - b.location);
 
         if (items.length === 0) {
             return '';
@@ -44,19 +47,17 @@ class RendererState {
         const maxItemWidth = items.map(fobj => fobj.label.length)
                                   .reduce((a, b) => a > b ? a : b);
 
-        const EXTRA_SPACES = 2;
-
         const itemsWithPadding = items.map(fobj => {
             const len = fobj.label.length;
-            const spacing = maxItemWidth - len;
-            const rightPad = ' '.repeat((1 + EXTRA_SPACES + spacing) / 2);
-            const leftPad = ' '.repeat((EXTRA_SPACES + spacing) / 2);
-            return '|' + leftPad + fobj.label + rightPad + '|';
+            const spacing = RendererState.EXTRA_SPACES + maxItemWidth - len;
+            const rightPad = ' '.repeat((1 + spacing) / 2);
+            const leftPad = ' '.repeat(spacing / 2);
+            return '|' + leftPad + fobj.label + rightPad + '|\n';
         });
 
-        const header = '+' + '-'.repeat(maxItemWidth + EXTRA_SPACES) + '+\n';
+        const header = '+' + '-'.repeat(maxItemWidth + RendererState.EXTRA_SPACES) + '+\n';
 
-        return header + itemsWithPadding.join('\n') + header;
+        return header + itemsWithPadding.join('') + header;
     }
 
     private addError(e: Error) {
@@ -66,8 +67,9 @@ class RendererState {
 
 export default class PlaintextRenderer extends Renderer {
     export(frame: Frame): {dataURI: string, errors: Error[]} {
-        const objects = frame.dump();
-        const state = new RendererState(Object.values(objects));
+        const dump = frame.dump();
+        const objects = Object.keys(dump).map(id => dump[id]);
+        const state = new RendererState(objects);
         const finalText = btoa(state.finalize());
         const dataURI = `data:text/plain;base64,${finalText}`;
         const errors = state.getErrors();
