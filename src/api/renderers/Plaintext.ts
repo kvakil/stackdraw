@@ -79,9 +79,8 @@ class RendererState {
             return '';
         } else if (captions.length === 0) {
             return '';
-        } else if (captions.length === 1) {
-            return captions[0].caption;
         }
+        return captions[0].caption;
     }
 
     /**
