@@ -68,3 +68,14 @@ it('overrides glyphs if they cannot be combined', () => {
     const expected = Glyph.BOTTOM_LEFT_CORNER;
     expect(tc.toString()).toBe(expected);
 });
+
+it('extends the canvas as necessary with glyphs', () => {
+    const tc = new TextCanvas();
+    tc.add(2, 3, Glyph.HWALL);
+    const expected = [
+        '    ',
+        '    ',
+        '   ' + Glyph.HWALL
+    ].join('\n');
+    expect(tc.toString()).toBe(expected);
+});
