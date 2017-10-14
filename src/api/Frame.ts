@@ -59,4 +59,14 @@ export default class Frame {
     dump(): Readonly<{[id: string]: Readonly<FrameObject>}> {
         return this.objects;
     }
+
+    /**
+     * Outputs all the objects of this frame.
+     * 
+     * @return all the frame objects in an array.
+     */
+    getObjects(): Readonly<FrameObject>[] {
+        const keys = Object.keys(this.objects);
+        return keys.map(id => this.objects[id]);
+    }
 }

@@ -23,7 +23,7 @@ class RendererState {
     private static readonly HEADER_LINES = 1;
     
     /** An array of all the objects to render. */
-    private objects: FrameObject[];
+    private frames: Frame[];
 
     /**
      * An array containing all errors encountered while rendering. 
@@ -36,26 +36,42 @@ class RendererState {
     /** The underlying canvas being drawn. */
     private canvas: TextCanvas;
 
+    /** The width of the stack, determined by its largest item. */
+    private stackWidth: number;
+
+    /** The height of the stack, determined by its largest item. */
+    private stackHeight: number;
+
     /**
-     * Creates a new renderer with the given objects and no errors.
+     * Creates a new renderer with the given frames and no errors.
      * 
-     * @param objects {FrameObject[]} the objects to render
+     * @param frames the frames to render.
      */
-    constructor(objects: FrameObject[]) {
-        this.objects = objects;
+    constructor(frames: Frame[]) {
+        this.frames = frames;
         this.errors = [];
         this.canvas = new TextCanvas();
+        
+        const items = this.getAllFrameObjects()
+                          .filter((x: FrameObject): x is StackItem => x instanceof StackItem);
+        this.stackWidth = Math.max(...items.map(fobj => fobj.label.length));
+        this.stackHeight = Math.max(...items.map(fobj => fobj.location));
     }
 
     /**
      * Finalizes the renderer, returning a string representing the render.
      * 
-     * @return {string} the resulting plaintext render
+     * @return {string} the resulting frame-by-frame plaintext render
      */
-    finalize(): string {
-        this.renderCaption();
-        this.renderStackLayout();
-        return this.canvas.toString();
+    finalize(): string[] {
+        const renders: string[] = [];
+        for (const frame of this.frames) {
+            this.renderCaption(frame);
+            this.renderStackLayout(frame);
+            renders.push(this.canvas.toString());
+            this.canvas = new TextCanvas();
+        }
+        return renders;
     }
 
     /**
@@ -72,8 +88,9 @@ class RendererState {
      * 
      * Adds an error if multiple captions are set.
      */
-    private renderCaption(): void {
-        const captions = this.objects.filter((x: FrameObject): x is Caption => x instanceof Caption);
+    private renderCaption(frame: Frame): void {
+        const captions = frame.getObjects()
+                              .filter((x: FrameObject): x is Caption => x instanceof Caption);
         if (captions.length > 1) {
             this.addError(new Error(RendererState.TOO_MANY_CAPTIONS));
             return;
@@ -90,19 +107,24 @@ class RendererState {
      * A stack layout is a drawing depicting each thing on the stack.
      * The layout is padded appropriately for aesthetic reasons.
      */
-    private renderStackLayout(): void {
-        const items = this.objects.filter((x: FrameObject): x is StackItem => x instanceof StackItem);
+    private renderStackLayout(frame: Frame): void {
+        const items = frame.getObjects()
+                           .filter((x: FrameObject): x is StackItem => x instanceof StackItem);
         if (items.length === 0) {
             return;
         }
 
-        const maxItemWidth = Math.max(...items.map(fobj => fobj.label.length));
+        const maxItemWidth = this.stackWidth;
 
         items.forEach(fobj => this.addStackItem(fobj, maxItemWidth));
 
-        const maxItemLocation = Math.max(...items.map(fobj => fobj.location));
+        const maxItemLocation = this.stackHeight;
 
         this.drawBox(maxItemLocation, maxItemWidth);
+    }
+    
+    private getAllFrameObjects(): FrameObject[] {
+        return ([] as FrameObject[]).concat(...this.frames.map(f => f.getObjects()));
     }
 
     /**
@@ -159,14 +181,11 @@ class RendererState {
  * 
  * @todo At the moment, this only exports the first frame.
  * 
- * @return text - the resulting plaintext render.
- * @return errors - any errors which occurred..
+ * @return text - the resulting plaintext render, frame-by-frame.
+ * @return errors - any errors which occurred.
  */
-export default function plaintextExport(frames: Frame[]): {text: string, errors: Error[]} {
-    const frame = frames[0];
-    const dump = frame.dump();
-    const objects = Object.keys(dump).map(id => dump[id]);
-    const state = new RendererState(objects);
+export default function plaintextExport(frames: Frame[]): {text: string[], errors: Error[]} {
+    const state = new RendererState(frames);
     const text = state.finalize();
     const errors = state.getErrors();
     return {text: text, errors: errors};

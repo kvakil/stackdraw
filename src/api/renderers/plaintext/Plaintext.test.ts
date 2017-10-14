@@ -18,7 +18,7 @@ it('can create a basic stack frame', () => {
 
     const result = plaintextExport([frame]);
     expect(result.errors).toHaveLength(0);
-    expect(result.text).toBe(expectedResult);
+    expect(result.text[0]).toBe(expectedResult);
 });
 
 it('errors on double captions', () => {
@@ -46,7 +46,7 @@ it('shows the caption', () => {
 
     const result = plaintextExport([frame]);
     expect(result.errors).toHaveLength(0);
-    expect(result.text).toBe(expectedResult);
+    expect(result.text[0]).toBe(expectedResult);
 });
 
 it('can deal with very long lengths', () => {
@@ -70,7 +70,7 @@ it('can deal with very long lengths', () => {
         '└──────────────────────┘'
     ].join('\n');
 
-    expect(result.text).toBe(expected);
+    expect(result.text[0]).toBe(expected);
 });
 
 it('can deal with unordered stack frames', () => {
@@ -88,5 +88,5 @@ it('can deal with unordered stack frames', () => {
 
     const result = plaintextExport([frame]);
     expect(result.errors).toHaveLength(0);
-    expect(result.text).toBe(expectedResult);
+    expect(result.text[0]).toBe(expectedResult);
 });
