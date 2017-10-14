@@ -101,3 +101,16 @@ it('can draw vertical lines', () => {
     ].join('\n');
     expect(tc.toString()).toBe(expected);
 });
+
+it('interests horizontal and vertical lines', () => {
+    const tc = new TextCanvas();
+    tc.vline({row: 1, col: 2}, 2);
+    tc.hline({row: 2, col: 3}, 2);
+    const expected = [
+        '    ',
+        '  ' + Glyph.VLINE + ' ',
+        ' ' + Glyph.HLINE + Glyph.CROSS + Glyph.HLINE
+    ].join('\n');
+    expect(tc.toString()).toBe(expected);
+
+});
