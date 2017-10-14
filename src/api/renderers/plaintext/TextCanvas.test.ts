@@ -102,7 +102,7 @@ it('can draw vertical lines', () => {
     expect(tc.toString()).toBe(expected);
 });
 
-it('interests horizontal and vertical lines', () => {
+it('intersects horizontal and vertical lines', () => {
     const tc = new TextCanvas();
     tc.vline({row: 1, col: 2}, 2);
     tc.hline({row: 2, col: 3}, 2);
