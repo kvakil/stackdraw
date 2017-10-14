@@ -96,13 +96,11 @@ class RendererState {
             return;
         }
 
-        const maxItemWidth = items.map(fobj => fobj.label.length)
-                                  .reduce((a, b) => a > b ? a : b);
+        const maxItemWidth = Math.max(...items.map(fobj => fobj.label.length));
 
         items.forEach(fobj => this.addStackItem(fobj, maxItemWidth));
 
-        const maxItemLocation = items.map(fobj => fobj.location)
-                                     .reduce((a, b) => a > b ? a : b);
+        const maxItemLocation = Math.max(...items.map(fobj => fobj.location));
 
         this.drawBox(maxItemLocation, maxItemWidth);
     }
