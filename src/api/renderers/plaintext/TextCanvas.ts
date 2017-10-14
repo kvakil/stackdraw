@@ -68,6 +68,15 @@ export default class TextCanvas {
             this.grid.push('');
         }
 
-        this.grid = this.grid.map(line => line.padEnd(col + 1, ' '));
+        /**
+         * Only expand column-wise if the first row is too short.
+         * Since we maintain the invariants that all rows are the
+         * same length and that the first row always exists, this
+         * check always works.
+         */
+        const rowLength = this.grid[0].length;
+        if (rowLength < col) {
+            this.grid = this.grid.map(line => line.padEnd(col + 1, ' '));            
+        }
     }
 }
