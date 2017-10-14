@@ -97,8 +97,9 @@ class RendererState {
         });
 
         const header = '+' + '-'.repeat(maxItemWidth + RendererState.EXTRA_SPACES) + '+\n';
+        const footer = header;
 
-        return header + itemsWithPadding.join('') + header;
+        return header + itemsWithPadding.join('') + footer;
     }
 
     /**
