@@ -1,8 +1,8 @@
 import Renderer from '../Renderer';
-import Frame from '../Frame';
-import FrameObject from '../FrameObject';
-import Caption from '../fos/Caption';
-import StackItem from '../fos/StackItem';
+import Frame from '../../Frame';
+import FrameObject from '../../FrameObject';
+import Caption from '../../fos/Caption';
+import StackItem from '../../fos/StackItem';
 
 const enum Glyphs {
     SPACE = ' ',

@@ -1,7 +1,7 @@
 import PlaintextRenderer from './Plaintext';
-import Frame from '../Frame';
-import Caption from '../fos/Caption';
-import StackItem from '../fos/StackItem';
+import Frame from '../../Frame';
+import Caption from '../../fos/Caption';
+import StackItem from '../../fos/StackItem';
 
 function dataURIToPlaintext(dataURI: string): string | null {
     const header = 'data:text/plain;base64,';
