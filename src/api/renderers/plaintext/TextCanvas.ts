@@ -1,6 +1,11 @@
 import 'core-js/es7/string';
 
 /**
+ * A type represting a location on the 2D grid.
+ */
+export type Location = { row: number, col: number };
+
+/**
  * The box-drawing glyphs.
  */
 export enum Glyph {
@@ -46,28 +51,27 @@ export class TextCanvas {
      * It is undefined behavior if this is called with `char` having
      * length greater than 1.
      * 
-     * @param row the row of the new character.
+     * @param location the location of the new character.
      * @param col the column of the new character.
      * @param char a string containing only one character.
      */
-    set(row: number, col: number, char: string) {
-        this.text(row, col, char);
+    set(loc: Location, char: string) {
+        this.text(loc, char);
     }
 
     /**
      * Writes a string starting at the given row and column.
      * 
-     * @param row the row to start writing at.
-     * @param col the column to start writing at.
+     * @param loc the location to start writing at
      * @param toWrite the string to write.
      */
-    text(row: number, col: number, toWrite: string) {
-        const maxColumn = col + toWrite.length - 1;
-        this.expand(row, maxColumn);
-        const rowToChange = this.grid[row];
-        const left = rowToChange.slice(0, col);
+    text(loc: Location, toWrite: string) {
+        const maxColumn = loc.col + toWrite.length - 1;
+        this.expand({row: loc.row, col: maxColumn});
+        const rowToChange = this.grid[loc.row];
+        const left = rowToChange.slice(0, loc.col);
         const right = rowToChange.slice(maxColumn + 1);
-        this.grid[row] = left + toWrite + right;
+        this.grid[loc.row] = left + toWrite + right;
     }
 
     /**
@@ -76,19 +80,22 @@ export class TextCanvas {
      * If a glyph already exists there, it might be combined with the
      * new glyph. If the glyphs cannot be combined, the new glyph
      * will taken precedence.
+     * 
+     * @param loc the location to write the glyph at.
+     * @param glyph the glyph to write.
      */
-    add(row: number, col: number, glyph: Glyph) {
+    add(loc: Location, glyph: Glyph) {
         return;
     }
 
     /**
-     * Expands the canvas to the given dimensions.
+     * Expands the canvas such that writing to the given location is
+     * possible. Adds spaces in order to do so.
      * 
-     * @param row the new maximum row.
-     * @param col the new maximum column.
+     * @param loc the location that the canvas should be expanded to     
      */
-    private expand(row: number, col: number) {
-        while (this.grid.length <= row) {
+    private expand(loc: Location) {
+        while (this.grid.length <= loc.row) {
             this.grid.push('');
         }
 
@@ -99,8 +106,8 @@ export class TextCanvas {
          * check always works.
          */
         const rowLength = this.grid[0].length;
-        if (rowLength < col) {
-            this.grid = this.grid.map(line => line.padEnd(col + 1, ' '));            
+        if (rowLength < loc.col) {
+            this.grid = this.grid.map(line => line.padEnd(loc.col + 1, ' '));            
         }
     }
 }

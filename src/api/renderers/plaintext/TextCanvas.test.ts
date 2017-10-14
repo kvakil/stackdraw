@@ -7,13 +7,13 @@ it('can be initialized and exported', () => {
 
 it('correctly sets individual characters', () => {
     const tc = new TextCanvas();
-    tc.set(0, 0, 'a');
+    tc.set({row: 0, col: 0}, 'a');
     expect(tc.toString()).toBe('a');
 });
 
 it('appropriately expands the canvas', () => {
     const tc = new TextCanvas();
-    tc.set(2, 3, 'a');
+    tc.set({row: 2, col: 3}, 'a');
     const expected = [
         '    ',
         '    ',
@@ -24,9 +24,9 @@ it('appropriately expands the canvas', () => {
 
 it('allows multiple sets', () => {
     const tc = new TextCanvas();
-    tc.set(2, 3, 'a');
-    tc.set(1, 1, 'b');
-    tc.set(0, 5, 'c');
+    tc.set({row: 2, col: 3}, 'a');
+    tc.set({row: 1, col: 1}, 'b');
+    tc.set({row: 0, col: 5}, 'c');
     const expected = [
         '     c',
         ' b    ',
@@ -37,7 +37,7 @@ it('allows multiple sets', () => {
 
 it('allows writing strings to locations', () => {
     const tc = new TextCanvas();
-    tc.text(2, 3, 'abc');
+    tc.text({row: 2, col: 3}, 'abc');
     const expected = [
         '      ',
         '      ',
@@ -48,30 +48,30 @@ it('allows writing strings to locations', () => {
 
 it('allows writing special glyphs', () => {
     const tc = new TextCanvas();
-    tc.add(0, 0, Glyph.BOTTOM_LEFT_CORNER);
+    tc.add({row: 0, col: 0}, Glyph.BOTTOM_LEFT_CORNER);
     const expected = Glyph.BOTTOM_LEFT_CORNER;
     expect(tc.toString()).toBe(expected);
 });
 
 it('combines glyphs where appropriate', () => {
     const tc = new TextCanvas();
-    tc.add(0, 0, Glyph.HWALL);
-    tc.add(0, 0, Glyph.VWALL);
+    tc.add({row: 0, col: 0}, Glyph.HWALL);
+    tc.add({row: 0, col: 0}, Glyph.VWALL);
     const expected = Glyph.CROSS;
     expect(tc.toString()).toBe(expected);
 });
 
 it('overrides glyphs if they cannot be combined', () => {
     const tc = new TextCanvas();
-    tc.add(0, 0, Glyph.HWALL);
-    tc.add(0, 0, Glyph.BOTTOM_LEFT_CORNER);
+    tc.add({row: 0, col: 0}, Glyph.HWALL);
+    tc.add({row: 0, col: 0}, Glyph.BOTTOM_LEFT_CORNER);
     const expected = Glyph.BOTTOM_LEFT_CORNER;
     expect(tc.toString()).toBe(expected);
 });
 
 it('extends the canvas as necessary with glyphs', () => {
     const tc = new TextCanvas();
-    tc.add(2, 3, Glyph.HWALL);
+    tc.add({row: 2, col: 3}, Glyph.HWALL);
     const expected = [
         '    ',
         '    ',
