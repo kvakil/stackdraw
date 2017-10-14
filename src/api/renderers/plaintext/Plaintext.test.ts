@@ -1,4 +1,4 @@
-import PlaintextRenderer from './Plaintext';
+import plaintextExport from './Plaintext';
 import Frame from '../../Frame';
 import Caption from '../../fos/Caption';
 import StackItem from '../../fos/StackItem';
@@ -26,7 +26,7 @@ it('can create a basic stack frame', () => {
         ''
     ].join('\n');
 
-    const result = (new PlaintextRenderer()).export(frame);
+    const result = plaintextExport([frame]);
     expect(result.errors).toHaveLength(0);
     expect(dataURIToPlaintext(result.dataURI)).toBe(expectedResult);
 });
@@ -38,7 +38,7 @@ it('errors on double captions', () => {
     frame.change('cap1', new Caption('hi'));
     frame.change('cap2', new Caption('hi'));
 
-    const result = (new PlaintextRenderer()).export(frame);
+    const result = plaintextExport([frame]);
     expect(result.errors).not.toHaveLength(0);
 });
 
@@ -55,7 +55,7 @@ it('shows the caption', () => {
         ''
     ].join('\n');
 
-    const result = (new PlaintextRenderer()).export(frame);
+    const result = plaintextExport([frame]);
     expect(result.errors).toHaveLength(0);
     expect(dataURIToPlaintext(result.dataURI)).toBe(expectedResult);
 });
@@ -68,7 +68,7 @@ it('can deal with very long lengths', () => {
     frame.change('long', new StackItem(2, 'A'.repeat(LONG)));
     frame.change('ecx', new StackItem(3, 'ecx'));
 
-    const result = (new PlaintextRenderer()).export(frame);
+    const result = plaintextExport([frame]);
     expect(result.errors).toHaveLength(0);
 
     const plaintext = dataURIToPlaintext(result.dataURI);
@@ -95,7 +95,7 @@ it('can deal with unordered stack frames', () => {
         ''
     ].join('\n');
 
-    const result = (new PlaintextRenderer()).export(frame);
+    const result = plaintextExport([frame]);
     expect(result.errors).toHaveLength(0);
     expect(dataURIToPlaintext(result.dataURI)).toBe(expectedResult);
 });

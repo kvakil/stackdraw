@@ -126,26 +126,13 @@ class RendererState {
     }
 }
 
-/**
- * A Renderer which outputs in plaintext.
- * 
- * @implements Renderer
- */
-export default class PlaintextRenderer extends Renderer {
-    export(frame: Frame): {dataURI: string, errors: Error[]} {
-        const dump = frame.dump();
-        const objects = Object.keys(dump).map(id => dump[id]);
-        const state = new RendererState(objects);
-        const finalText = btoa(state.finalize());
-        const dataURI = `data:text/plain;base64,${finalText}`;
-        const errors = state.getErrors();
-        return {dataURI: dataURI, errors: errors};
-    }
-
-    /**
-     * @todo Implement this.
-     */
-    exportAll(frames: Frame[]): {dataURI: string, errors: Array<Error>} {
-        return {dataURI: '', errors: new Array<Error>()};
-    }
+export default function plaintextExport(frames: Frame[]): {dataURI: string, errors: Error[]} {
+    const frame = frames[0];
+    const dump = frame.dump();
+    const objects = Object.keys(dump).map(id => dump[id]);
+    const state = new RendererState(objects);
+    const finalText = btoa(state.finalize());
+    const dataURI = `data:text/plain;base64,${finalText}`;
+    const errors = state.getErrors();
+    return {dataURI: dataURI, errors: errors};
 }
