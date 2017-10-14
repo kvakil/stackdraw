@@ -1,11 +1,24 @@
 import 'core-js/es7/string';
 
 /**
+ * The box-drawing glyphs.
+ */
+export enum Glyph {
+    TOP_LEFT_CORNER = '┌',
+    BOTTOM_LEFT_CORNER = '└',
+    TOP_RIGHT_CORNER = '┐',
+    BOTTOM_RIGHT_CORNER = '┘',
+    VWALL = '│',
+    HWALL = '─',
+    CROSS = '┼' // also VWALL + HWALL
+}
+
+/**
  * A canvas which can be drawn on and exports to ASCII.
  * Its coordinates are labelled starting from (0, 0) at the top-left,
  * and increasing as one moves towards the bottom-right.
  */
-export default class TextCanvas {
+export class TextCanvas {
     /**
      * Internal representation of the current canvas.
      */
@@ -55,6 +68,17 @@ export default class TextCanvas {
         const left = rowToChange.slice(0, col);
         const right = rowToChange.slice(maxColumn + 1);
         this.grid[row] = left + toWrite + right;
+    }
+
+    /**
+     * Adds a glyph to the given location.
+     * 
+     * If a glyph already exists there, it might be combined with the
+     * new glyph. If the glyphs cannot be combined, the new glyph
+     * will taken precedence.
+     */
+    add(row: number, col: number, glyph: Glyph) {
+        return;
     }
 
     /**

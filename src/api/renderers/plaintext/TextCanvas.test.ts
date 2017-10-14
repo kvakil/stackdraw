@@ -1,4 +1,4 @@
-import TextCanvas from './TextCanvas';
+import { TextCanvas, Glyph } from './TextCanvas';
 
 it('can be initialized and exported', () => {
     const tc = new TextCanvas();
@@ -43,5 +43,28 @@ it('allows writing strings to locations', () => {
         '      ',
         '   abc'
     ].join('\n');
+    expect(tc.toString()).toBe(expected);
+});
+
+it('allows writing special glyphs', () => {
+    const tc = new TextCanvas();
+    tc.add(0, 0, Glyph.BOTTOM_LEFT_CORNER);
+    const expected = Glyph.BOTTOM_LEFT_CORNER;
+    expect(tc.toString()).toBe(expected);
+});
+
+it('combines glyphs where appropriate', () => {
+    const tc = new TextCanvas();
+    tc.add(0, 0, Glyph.HWALL);
+    tc.add(0, 0, Glyph.VWALL);
+    const expected = Glyph.CROSS;
+    expect(tc.toString()).toBe(expected);
+});
+
+it('overrides glyphs if they cannot be combined', () => {
+    const tc = new TextCanvas();
+    tc.add(0, 0, Glyph.HWALL);
+    tc.add(0, 0, Glyph.BOTTOM_LEFT_CORNER);
+    const expected = Glyph.BOTTOM_LEFT_CORNER;
     expect(tc.toString()).toBe(expected);
 });
