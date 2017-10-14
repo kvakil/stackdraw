@@ -4,6 +4,10 @@ import FrameObject from '../FrameObject';
 import Caption from '../fos/Caption';
 import StackItem from '../fos/StackItem';
 
+/**
+ * This describes the current rendering state for plaintext rendering.
+ * It does all the actual work of figuring out what needs to be drawn and where.
+ */
 class RendererState {
     /** An error for when multiple captions are set. */
     private static readonly TOO_MANY_CAPTIONS: string =
