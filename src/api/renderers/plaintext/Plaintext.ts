@@ -157,6 +157,8 @@ class RendererState {
  * This exports a list of frames as 
  * @param frames the frames to export
  * 
+ * @todo At the moment, this only exports the first frame.
+ * 
  * @return text - the resulting plaintext render.
  * @return errors - any errors which occurred..
  */
