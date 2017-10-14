@@ -4,6 +4,14 @@ import FrameObject from '../FrameObject';
 import Caption from '../fos/Caption';
 import StackItem from '../fos/StackItem';
 
+const enum Glyphs {
+    SPACE = ' ',
+    VWALL = '|',
+    HWALL = '-',
+    CORNER = '+',
+    NEWLINE = '\n'
+}
+
 /**
  * This describes the current rendering state for plaintext rendering.
  * It does all the actual work of figuring out what needs to be drawn and where.
@@ -95,12 +103,13 @@ class RendererState {
         const itemsWithPadding = items.map(fobj => {
             const len = fobj.label.length;
             const spacing = RendererState.EXTRA_SPACES + maxItemWidth - len;
-            const rightPad = ' '.repeat((1 + spacing) / 2);
-            const leftPad = ' '.repeat(spacing / 2);
-            return '|' + leftPad + fobj.label + rightPad + '|\n';
+            const rightPad = Glyphs.SPACE.repeat((1 + spacing) / 2);
+            const leftPad = Glyphs.SPACE.repeat(spacing / 2);
+            return Glyphs.VWALL + leftPad + fobj.label + rightPad + Glyphs.VWALL + Glyphs.NEWLINE;
         });
 
-        const header = '+' + '-'.repeat(maxItemWidth + RendererState.EXTRA_SPACES) + '+\n';
+        const topWall = Glyphs.HWALL.repeat(maxItemWidth + RendererState.EXTRA_SPACES);
+        const header = Glyphs.CORNER + topWall + Glyphs.CORNER + Glyphs.NEWLINE;
         const footer = header;
 
         return header + itemsWithPadding.join('') + footer;
