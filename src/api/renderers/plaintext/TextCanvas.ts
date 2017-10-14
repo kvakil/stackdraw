@@ -13,9 +13,9 @@ export enum Glyph {
     BOTTOM_LEFT_CORNER = '└',
     TOP_RIGHT_CORNER = '┐',
     BOTTOM_RIGHT_CORNER = '┘',
-    VWALL = '│',
-    HWALL = '─',
-    CROSS = '┼' // also VWALL + HWALL
+    VLINE = '│',
+    HLINE = '─',
+    CROSS = '┼' // also VLINE + HLINE
 }
 
 /**
@@ -87,8 +87,8 @@ export class TextCanvas {
     add(loc: Location, glyph: Glyph) {
         this.expand(loc);
         const current = this.grid[loc.row][loc.col];
-        if ((current === Glyph.HWALL && glyph === Glyph.VWALL) ||
-            (current === Glyph.VWALL && glyph === Glyph.HWALL)) {
+        if ((current === Glyph.HLINE && glyph === Glyph.VLINE) ||
+            (current === Glyph.VLINE && glyph === Glyph.HLINE)) {
             this.set(loc, Glyph.CROSS);
         } else {
             this.set(loc, glyph);

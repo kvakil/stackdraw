@@ -79,3 +79,14 @@ it('extends the canvas as necessary with glyphs', () => {
     ].join('\n');
     expect(tc.toString()).toBe(expected);
 });
+
+it('can draw horizontal lines', () => {
+    const tc = new TextCanvas();
+    tc.hline({row: 2, col: 3}, 2);
+    const expected = [
+        '     ',
+        '     ',
+        '   ' + Glyph.HWALL + Glyph.HWALL
+    ].join('\n');
+    expect(tc.toString()).toBe(expected);
+});

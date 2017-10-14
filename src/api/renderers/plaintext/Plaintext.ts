@@ -6,8 +6,8 @@ import StackItem from '../../fos/StackItem';
 
 const enum Glyphs {
     SPACE = ' ',
-    VWALL = '|',
-    HWALL = '-',
+    VLINE = '|',
+    HLINE = '-',
     CORNER = '+',
     NEWLINE = '\n'
 }
@@ -107,10 +107,10 @@ class RendererState {
             const spacing = RendererState.EXTRA_SPACES + maxItemWidth - len;
             const rightPad = Glyphs.SPACE.repeat((1 + spacing) / 2);
             const leftPad = Glyphs.SPACE.repeat(spacing / 2);
-            return Glyphs.VWALL + leftPad + fobj.label + rightPad + Glyphs.VWALL + Glyphs.NEWLINE;
+            return Glyphs.VLINE + leftPad + fobj.label + rightPad + Glyphs.VLINE + Glyphs.NEWLINE;
         });
 
-        const topWall = Glyphs.HWALL.repeat(maxItemWidth + RendererState.EXTRA_SPACES);
+        const topWall = Glyphs.HLINE.repeat(maxItemWidth + RendererState.EXTRA_SPACES);
         const header = Glyphs.CORNER + topWall + Glyphs.CORNER + Glyphs.NEWLINE;
         const footer = header;
 
