@@ -1,16 +1,8 @@
-import Renderer from '../Renderer';
 import Frame from '../../Frame';
 import FrameObject from '../../FrameObject';
 import Caption from '../../fos/Caption';
 import StackItem from '../../fos/StackItem';
-
-const enum Glyphs {
-    SPACE = ' ',
-    VLINE = '|',
-    HLINE = '-',
-    CORNER = '+',
-    NEWLINE = '\n'
-}
+import {Glyph, TextCanvas} from './TextCanvas';
 
 /**
  * This describes the current rendering state for plaintext rendering.
@@ -24,6 +16,12 @@ class RendererState {
     /** Number of padding spaces to add around each stack element. */
     private static readonly EXTRA_SPACES = 2;
 
+    /** Number of lines used by the caption. */
+    private static readonly CAPTION_LINES = 1;
+
+    /** Number of lines used by the header. */
+    private static readonly HEADER_LINES = 1;
+    
     /** An array of all the objects to render. */
     private objects: FrameObject[];
 
@@ -35,6 +33,9 @@ class RendererState {
      */
     private errors: Error[];
 
+    /** The underlying canvas being drawn. */
+    private canvas: TextCanvas;
+
     /**
      * Creates a new renderer with the given objects and no errors.
      * 
@@ -43,6 +44,7 @@ class RendererState {
     constructor(objects: FrameObject[]) {
         this.objects = objects;
         this.errors = [];
+        this.canvas = new TextCanvas();
     }
 
     /**
@@ -51,9 +53,9 @@ class RendererState {
      * @return {string} the resulting plaintext render
      */
     finalize(): string {
-        const caption: string = this.getCaption();
-        const layout: string = this.getStackLayout();
-        return caption + '\n' + layout;
+        this.renderCaption();
+        this.renderStackLayout();
+        return this.canvas.toString();
     }
 
     /**
@@ -66,55 +68,69 @@ class RendererState {
     }
 
     /**
-     * Returns the caption of this render.
+     * Renders the caption as the first line on the canvas.
      * 
      * Adds an error if multiple captions are set.
-     * 
-     * @return {string} the caption.
      */
-    private getCaption(): string {
+    private renderCaption(): void {
         const captions = this.objects.filter((x: FrameObject): x is Caption => x instanceof Caption);
         if (captions.length > 1) {
             this.addError(new Error(RendererState.TOO_MANY_CAPTIONS));
-            return '';
+            return;
         } else if (captions.length === 0) {
-            return '';
+            return;
         }
-        return captions[0].caption;
+        const caption = captions[0].caption;
+        this.canvas.text({row: 0, col: 0}, caption);
     }
 
     /**
-     * Returns the stack layout of this render.
+     * Renders the stack layout of this renderer.
      * 
      * A stack layout is a drawing depicting each thing on the stack.
      * The layout is padded appropriately for aesthetic reasons.
-     * 
-     * @return {string} the stack layout.
      */
-    private getStackLayout(): string {
-        const items = this.objects.filter((x: FrameObject): x is StackItem => x instanceof StackItem)
-                                  .sort((a, b) => a.location - b.location);
-
+    private renderStackLayout(): void {
+        const items = this.objects.filter((x: FrameObject): x is StackItem => x instanceof StackItem);
         if (items.length === 0) {
-            return '';
+            return;
         }
 
         const maxItemWidth = items.map(fobj => fobj.label.length)
                                   .reduce((a, b) => a > b ? a : b);
 
-        const itemsWithPadding = items.map(fobj => {
-            const len = fobj.label.length;
-            const spacing = RendererState.EXTRA_SPACES + maxItemWidth - len;
-            const rightPad = Glyphs.SPACE.repeat((1 + spacing) / 2);
-            const leftPad = Glyphs.SPACE.repeat(spacing / 2);
-            return Glyphs.VLINE + leftPad + fobj.label + rightPad + Glyphs.VLINE + Glyphs.NEWLINE;
-        });
+        items.forEach(fobj => this.addStackItem(fobj, maxItemWidth));
 
-        const topWall = Glyphs.HLINE.repeat(maxItemWidth + RendererState.EXTRA_SPACES);
-        const header = Glyphs.CORNER + topWall + Glyphs.CORNER + Glyphs.NEWLINE;
-        const footer = header;
+        const maxItemLocation = items.map(fobj => fobj.location)
+                                     .reduce((a, b) => a > b ? a : b);
 
-        return header + itemsWithPadding.join('') + footer;
+        this.drawBox(maxItemLocation, maxItemWidth);
+    }
+
+    private addStackItem(fobj: StackItem, maxLength: number) {
+        const row = fobj.location + RendererState.CAPTION_LINES + RendererState.HEADER_LINES;
+        // Approximately center the text.
+        const col = 1 + (RendererState.EXTRA_SPACES + maxLength - fobj.label.length) / 2;
+
+        this.canvas.text({row: row, col: col}, fobj.label);
+    }
+
+    private drawBox(lowest: number, largest: number) {
+        const boxRowStart = RendererState.CAPTION_LINES;
+        const boxRowEnd = boxRowStart + RendererState.HEADER_LINES + lowest + 1;
+        const boxColStart = 0;
+        const boxColEnd = largest + RendererState.EXTRA_SPACES + 1;
+
+        // Some of these are off, but they will be overwritten by the corners.
+        this.canvas.hline({row: boxRowStart, col: boxColStart}, boxColEnd - boxColStart);
+        this.canvas.hline({row: boxRowEnd, col: boxColStart}, boxColEnd - boxColStart);
+        this.canvas.vline({row: boxRowStart, col: boxColStart}, boxRowEnd - boxRowStart);
+        this.canvas.vline({row: boxRowStart, col: boxColEnd}, boxRowEnd - boxRowStart);
+
+        this.canvas.add({row: boxRowStart, col: boxColStart}, Glyph.TOP_LEFT_CORNER);
+        this.canvas.add({row: boxRowStart, col: boxColEnd}, Glyph.TOP_RIGHT_CORNER);
+        this.canvas.add({row: boxRowEnd, col: boxColStart}, Glyph.BOTTOM_LEFT_CORNER);
+        this.canvas.add({row: boxRowEnd, col: boxColEnd}, Glyph.BOTTOM_RIGHT_CORNER);
     }
 
     /**
@@ -126,13 +142,19 @@ class RendererState {
     }
 }
 
-export default function plaintextExport(frames: Frame[]): {dataURI: string, errors: Error[]} {
+/**
+ * This exports a list of frames as 
+ * @param frames the frames to export
+ * 
+ * @return text - the resulting plaintext render.
+ * @return errors - any errors which occurred..
+ */
+export default function plaintextExport(frames: Frame[]): {text: string, errors: Error[]} {
     const frame = frames[0];
     const dump = frame.dump();
     const objects = Object.keys(dump).map(id => dump[id]);
     const state = new RendererState(objects);
-    const finalText = btoa(state.finalize());
-    const dataURI = `data:text/plain;base64,${finalText}`;
+    const text = state.finalize();
     const errors = state.getErrors();
-    return {dataURI: dataURI, errors: errors};
+    return {text: text, errors: errors};
 }
