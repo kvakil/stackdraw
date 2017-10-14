@@ -77,8 +77,11 @@ class RendererState {
         if (captions.length > 1) {
             this.addError(new Error(RendererState.TOO_MANY_CAPTIONS));
             return '';
+        } else if (captions.length === 0) {
+            return '';
+        } else if (captions.length === 1) {
+            return captions[0].caption;
         }
-        return captions.map((fobj) => fobj.caption).join('');
     }
 
     /**
