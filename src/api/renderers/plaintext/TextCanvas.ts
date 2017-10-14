@@ -96,24 +96,50 @@ export class TextCanvas {
     }
 
     /**
+     * Draws a horizontal line from the starting location.
+     * 
+     * @param loc the starting location for the line.
+     * @param length the length of the line.
+     */
+    hline(loc: Location, length: number) {
+        const endingColumn = loc.col + length - 1;
+        for (let j = loc.col; j <= endingColumn; j++) {
+            this.add({row: loc.row, col: j}, Glyph.HLINE);
+        }
+    }
+
+    /**
+     * Draws a vertical line from the starting location.
+     * 
+     * @param loc the starting location for the line.
+     * @param length the length of the line.
+     */
+    vline(loc: Location, length: number) {
+        const endingRow = loc.row + length - 1;
+        for (let i = loc.row; i <= endingRow; i++) {
+            this.add({row: i, col: loc.col}, Glyph.VLINE);
+        }
+    }
+
+    /**
      * Expands the canvas such that writing to the given location is
      * possible. Adds spaces in order to do so.
      * 
      * @param loc the location that the canvas should be expanded to     
      */
     private expand(loc: Location) {
+        const rowLength = this.grid[0].length;
         while (this.grid.length <= loc.row) {
-            this.grid.push('');
+            this.grid.push(' '.repeat(rowLength));
         }
 
         /**
          * Only expand column-wise if the first row is too short.
          * Since we maintain the invariants that all rows are the
-         * same length and that the first row always exists, this
-         * check always works.
+         * at least the length of the first row and that the first
+         * row always exists, this check always works.
          */
-        const rowLength = this.grid[0].length;
-        if (rowLength < loc.col) {
+        if (rowLength <= loc.col) {
             this.grid = this.grid.map(line => line.padEnd(loc.col + 1, ' '));            
         }
     }
