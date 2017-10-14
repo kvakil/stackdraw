@@ -55,15 +55,15 @@ it('allows writing special glyphs', () => {
 
 it('combines glyphs where appropriate', () => {
     const tc = new TextCanvas();
-    tc.add({row: 0, col: 0}, Glyph.HWALL);
-    tc.add({row: 0, col: 0}, Glyph.VWALL);
+    tc.add({row: 0, col: 0}, Glyph.HLINE);
+    tc.add({row: 0, col: 0}, Glyph.VLINE);
     const expected = Glyph.CROSS;
     expect(tc.toString()).toBe(expected);
 });
 
 it('overrides glyphs if they cannot be combined', () => {
     const tc = new TextCanvas();
-    tc.add({row: 0, col: 0}, Glyph.HWALL);
+    tc.add({row: 0, col: 0}, Glyph.HLINE);
     tc.add({row: 0, col: 0}, Glyph.BOTTOM_LEFT_CORNER);
     const expected = Glyph.BOTTOM_LEFT_CORNER;
     expect(tc.toString()).toBe(expected);
@@ -71,22 +71,11 @@ it('overrides glyphs if they cannot be combined', () => {
 
 it('extends the canvas as necessary with glyphs', () => {
     const tc = new TextCanvas();
-    tc.add({row: 2, col: 3}, Glyph.HWALL);
+    tc.add({row: 2, col: 3}, Glyph.HLINE);
     const expected = [
         '    ',
         '    ',
-        '   ' + Glyph.HWALL
-    ].join('\n');
-    expect(tc.toString()).toBe(expected);
-});
-
-it('can draw horizontal lines', () => {
-    const tc = new TextCanvas();
-    tc.hline({row: 2, col: 3}, 2);
-    const expected = [
-        '     ',
-        '     ',
-        '   ' + Glyph.HWALL + Glyph.HWALL
+        '   ' + Glyph.HLINE
     ].join('\n');
     expect(tc.toString()).toBe(expected);
 });
