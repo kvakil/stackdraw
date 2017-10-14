@@ -2,7 +2,7 @@ import Frame from '../../Frame';
 import FrameObject from '../../FrameObject';
 import Caption from '../../fos/Caption';
 import StackItem from '../../fos/StackItem';
-import {Glyph, TextCanvas} from './TextCanvas';
+import { Glyph, TextCanvas } from './TextCanvas';
 
 /**
  * This describes the current rendering state for plaintext rendering.
