@@ -136,8 +136,8 @@ export class TextCanvas {
         /**
          * Only expand column-wise if the first row is too short.
          * Since we maintain the invariants that all rows are the
-         * at least the length of the first row and that the first
-         * row always exists, this check always works.
+         * same length and that the first row always exists, this
+         * check always works.
          */
         if (rowLength <= loc.col) {
             this.grid = this.grid.map(line => line.padEnd(loc.col + 1, ' '));            
