@@ -107,6 +107,12 @@ class RendererState {
         this.drawBox(maxItemLocation, maxItemWidth);
     }
 
+    /**
+     * Renders a single stack item on the stack layout.
+     * 
+     * @param fobj the StackItem to add to the renderer.
+     * @param maxLength the length of the largest StackItem (used for centering).
+     */
     private addStackItem(fobj: StackItem, maxLength: number) {
         const row = fobj.location + RendererState.CAPTION_LINES + RendererState.HEADER_LINES;
         // Approximately center the text.
@@ -115,6 +121,12 @@ class RendererState {
         this.canvas.text({row: row, col: col}, fobj.label);
     }
 
+    /**
+     * Draws a bounding box around the stack layout.
+     * 
+     * @param lowest the location of the lowest stack item.
+     * @param largest the width of the largest stack item.
+     */
     private drawBox(lowest: number, largest: number) {
         const boxRowStart = RendererState.CAPTION_LINES;
         const boxRowEnd = boxRowStart + RendererState.HEADER_LINES + lowest + 1;
@@ -135,6 +147,7 @@ class RendererState {
 
     /**
      * Adds an error to the list of current errors.
+     * 
      * @param e the error to add.
      */
     private addError(e: Error) {
