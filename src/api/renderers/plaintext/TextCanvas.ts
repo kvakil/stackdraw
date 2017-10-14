@@ -85,7 +85,14 @@ export class TextCanvas {
      * @param glyph the glyph to write.
      */
     add(loc: Location, glyph: Glyph) {
-        return;
+        this.expand(loc);
+        const current = this.grid[loc.row][loc.col];
+        if ((current === Glyph.HWALL && glyph === Glyph.VWALL) ||
+            (current === Glyph.VWALL && glyph === Glyph.HWALL)) {
+            this.set(loc, Glyph.CROSS);
+        } else {
+            this.set(loc, glyph);
+        }
     }
 
     /**
