@@ -154,7 +154,7 @@ class RendererState {
 }
 
 /**
- * This exports a list of frames as 
+ * This exports a list of frames as plaintext.
  * @param frames the frames to export
  * 
  * @todo At the moment, this only exports the first frame.
