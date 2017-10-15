@@ -122,7 +122,10 @@ class RendererState {
 
         this.drawBox(maxItemLocation, maxItemWidth);
     }
-    
+
+    /**
+     * Returns all objects in all frames.
+     */
     private getAllFrameObjects(): FrameObject[] {
         const objects: FrameObject[] = [];
         for (const frame of this.frames) {
