@@ -124,7 +124,14 @@ class RendererState {
     }
     
     private getAllFrameObjects(): FrameObject[] {
-        return ([] as FrameObject[]).concat(...this.frames.map(f => f.getObjects()));
+        const objects: FrameObject[] = [];
+        for (const frame of this.frames) {
+            const frameObjects = frame.getObjects();
+            for (const object of frameObjects) {
+                objects.push(object);
+            }
+        }
+        return objects;
     }
 
     /**
