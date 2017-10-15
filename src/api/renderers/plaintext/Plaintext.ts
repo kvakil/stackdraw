@@ -66,8 +66,9 @@ class RendererState {
     finalize(): string[] {
         const renders: string[] = [];
         for (const frame of this.frames) {
-            this.renderCaption(frame);
-            this.renderStackLayout(frame);
+            const objects = frame.getObjects();
+            this.renderCaption(objects);
+            this.renderStackLayout(objects);
             renders.push(this.canvas.toString());
             this.canvas = new TextCanvas();
         }
@@ -88,9 +89,8 @@ class RendererState {
      * 
      * Adds an error if multiple captions are set.
      */
-    private renderCaption(frame: Frame): void {
-        const captions = frame.getObjects()
-                              .filter((x: FrameObject): x is Caption => x instanceof Caption);
+    private renderCaption(objects: FrameObject[]): void {
+        const captions = objects.filter((x: FrameObject): x is Caption => x instanceof Caption);
         if (captions.length > 1) {
             this.addError(new Error(RendererState.TOO_MANY_CAPTIONS));
             return;
@@ -107,9 +107,8 @@ class RendererState {
      * A stack layout is a drawing depicting each thing on the stack.
      * The layout is padded appropriately for aesthetic reasons.
      */
-    private renderStackLayout(frame: Frame): void {
-        const items = frame.getObjects()
-                           .filter((x: FrameObject): x is StackItem => x instanceof StackItem);
+    private renderStackLayout(objects: FrameObject[]): void {
+        const items = objects.filter((x: FrameObject): x is StackItem => x instanceof StackItem);
         if (items.length === 0) {
             return;
         }
