@@ -90,3 +90,37 @@ it('can deal with unordered stack frames', () => {
     expect(result.errors).toHaveLength(0);
     expect(result.text[0]).toBe(expectedResult);
 });
+
+it('can render multiple frames', () => {
+    const frame1 = new Frame();
+    frame1.change('cap', new Caption('Frame 1'));
+    frame1.change('0', new StackItem(0, 'eax'));
+    frame1.change('1', new StackItem(1, 'ebx'));
+    const frame2 = new Frame();
+    frame2.change('cap', new Caption('Frame 2'));
+    frame2.change('0', new StackItem(0, 'eax'));
+    frame2.change('1', new StackItem(1, 'ebx'));
+    frame2.change('2', new StackItem(2, 'abcde'));
+
+    const expected1 = [
+        'Frame 1  ',
+        '┌───────┐',
+        '│  eax  │',
+        '│  ebx  │',
+        '│       │',
+        '└───────┘'
+    ].join('\n');
+    const expected2 = [
+        'Frame 2  ',
+        '┌───────┐',
+        '│  eax  │',
+        '│  ebx  │',
+        '│ abcde │',
+        '└───────┘',
+    ].join('\n');
+
+    const result = plaintextExport([frame1, frame2]);
+    expect(result.errors).toHaveLength(0);
+    expect(result.text[0]).toBe(expected1);
+    expect(result.text[1]).toBe(expected2);
+});
