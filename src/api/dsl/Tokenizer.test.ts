@@ -1,4 +1,4 @@
-import { tokenize } from './Tokenizer';
+import { tokenize, splitKeyValue } from './Tokenizer';
 
 it('splits lines into their tokens', () => {
     const {tokens, error} = tokenize('push ecx color=blue');
@@ -33,4 +33,22 @@ it('handles quoted things with spaces inside', () => {
 it('errors on dangling quotes', () => {
     const {error} = tokenize('push ecx `caption=Hello World');
     expect(error).not.toBeNull();
+});
+
+it('can split key=value pairs', () => {
+    const {key, value} = splitKeyValue('color=blue');
+    expect(key).toBe('color');
+    expect(value).toBe('blue');
+});
+
+it('can deal with when there is no = sign', () => {
+    const {key, value} = splitKeyValue('blue');
+    expect(key).toBe('blue');
+    expect(value).toBe('');
+});
+
+it('can deal with multiple = signs', () => {
+    const {key, value} = splitKeyValue('color=blue=red');
+    expect(key).toBe('color');
+    expect(value).toBe('blue=red');
 });

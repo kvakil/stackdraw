@@ -49,3 +49,16 @@ export function tokenize(line: string): {tokens: string[], error: Error | null} 
 export function splitIntoLines(code: string): string[] {
     return code.split('\n');
 }
+
+/**
+ * Splits an argument into parameter and value components.
+ * 
+ * @param arg the argument to split
+ */
+export function splitKeyValue(arg: string): {key: string, value: string} {
+    const index = arg.indexOf('=');
+    if (index === -1) {
+        return {key: arg, value: ''};
+    }
+    return {key: arg.substr(0, index), value: arg.substr(index + 1)};
+}
