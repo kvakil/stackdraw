@@ -63,7 +63,12 @@ export default class View extends React.Component<ViewProps, ViewState> {
           </p>
         </div>
         <div className="ViewCanvas">
-          <textarea id="canvas" className="textarea" readOnly={true} value={this.drawCanvas()} />
+          <textarea
+            id="canvas"
+            className="textarea is-medium"
+            readOnly={true}
+            value={this.drawCanvas()}
+          />
         </div>
       </div>
     );
