@@ -33,18 +33,27 @@ export default class View extends React.Component<ViewProps, ViewState> {
     this.setState({currentFrame: newFrame});
   }
 
+  getCurrentFrameDisplay(): string {
+    return `${this.state.currentFrame + 1}/${this.props.renders.length}`;
+  }
+
   render() {
     return (
       <div className="View">
-        <div className="ViewControl field is-grouped is-grouped-centered">
-        <p className="control is-primary">
-          <input className="button" type="button" value="Next" onClick={() => this.changeFrame(1)} />
-        </p>
-        <p className="control">
-          <input className="button" type="button" value="Prev" onClick={() => this.changeFrame(-1)} />
-        </p>
-      </div>
-      <div className="ViewCanvas">
+        <div className="ViewControl field has-addons is-grouped is-grouped-centered">
+          <p className="control">
+            <input className="button" type="button" value="Prev" onClick={() => this.changeFrame(-1)} />
+          </p>
+          <p className="control">
+            <label className="label">
+              {this.getCurrentFrameDisplay()}
+            </label>
+          </p>
+          <p className="control">
+            <input className="button" type="button" value="Next" onClick={() => this.changeFrame(1)} />
+          </p>
+        </div>
+        <div className="ViewCanvas">
           <textarea id="canvas" value={this.drawCanvas()} />
         </div>
       </div>
