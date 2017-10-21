@@ -62,3 +62,24 @@ export function splitKeyValue(arg: string): {key: string, value: string} {
     }
     return {key: arg.substr(0, index), value: arg.substr(index + 1)};
 }
+
+/**
+ * Gets all the values with the given key.
+ * 
+ * @param pairs the key value pairs
+ * @param needle the key to search for
+ * 
+ * @return a list of values with the given key
+ */
+export function getByKey(pairs: {key: string, value: string}[], needle: string): string[] {
+    return pairs.filter(({key, value}) => key === needle).map(kv => kv.value);
+}
+
+export function getByUniqueKey(pairs: {key: string, value: string}[], needle: string): string | Error {
+    const allValues = getByKey(pairs, needle);
+    switch (allValues.length) {
+        case 0: return '';
+        case 1: return allValues[0];
+        default: return new Error('multiple unique keys found');
+    }
+}
