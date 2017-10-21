@@ -69,4 +69,15 @@ export default class Frame {
         const keys = Object.keys(this.objects);
         return keys.map(id => this.objects[id]);
     }
+
+    /**
+     * Makes a shallow copy of the current frame.
+     * 
+     * @return a shallow copy of the current frame.
+     */
+    copy(): Frame {
+        const frame = new Frame();
+        frame.objects = {...this.objects};
+        return frame;
+    }
 }
