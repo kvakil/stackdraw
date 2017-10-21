@@ -23,15 +23,17 @@ export default function evaluate(code: string): {frames: Frame[], errors: Error[
         const args = tokens.slice(1);
         switch (instruction) {
             case 'frame':
-                frames.push(new Frame());
+                if (frames.length === 0) {
+                    frames.push(new Frame());
+                } else {
+                    const curFrame = frames[frames.length - 1];
+                    frames.push(curFrame.copy());
+                }
                 break;
             case 'push':
                 const currentFrame = frames[frames.length - 1];
                 pushIntoFrame(currentFrame, sp, args);
                 sp++;
-                break;
-            case 'pop':
-                sp--;
                 break;
             default:
                 break;
