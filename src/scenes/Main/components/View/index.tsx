@@ -1,21 +1,51 @@
 import * as React from 'react';
 
-export default class View extends React.Component {
+interface ViewProps extends React.Props<{}> {
+  renders: string[];
+}
+
+interface ViewState extends React.ComponentState {
+  currentFrame: number;
+}
+
+export default class View extends React.Component<ViewProps, ViewState> {
+  constructor(props: ViewProps) {
+    super(props);
+    this.state = {currentFrame: 0};
+  }
+
+  drawCanvas(): string {
+    if (this.state.currentFrame < 0 ||
+        this.state.currentFrame >= this.props.renders.length) {
+      return '';
+    }
+    return this.props.renders[this.state.currentFrame];
+  }
+
+  changeFrame(offset: number) {
+    let newFrame = this.state.currentFrame + offset;
+    if (newFrame < 0) {
+      newFrame = 0;
+    }
+    if (newFrame >= this.props.renders.length) {
+      newFrame = this.props.renders.length - 1;
+    }
+    this.setState({currentFrame: newFrame});
+  }
+
   render() {
     return (
       <div className="View">
         <div className="ViewControl field is-grouped is-grouped-centered">
         <p className="control is-primary">
-          <input className="button" type="button" value="Next" />
+          <input className="button" type="button" value="Next" onClick={() => this.changeFrame(1)} />
         </p>
         <p className="control">
-          <input className="button" type="button" value="Prev" />
+          <input className="button" type="button" value="Prev" onClick={() => this.changeFrame(-1)} />
         </p>
       </div>
       <div className="ViewCanvas">
-          <code id="canvas">
-            &nbsp;
-          </code>
+          <textarea id="canvas" value={this.drawCanvas()} />
         </div>
       </div>
     );

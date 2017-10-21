@@ -1,7 +1,22 @@
 import * as React from 'react';
 import './styles.css';
 
-export default class Editor extends React.Component {
+interface EditorProps extends React.Props<{}> {
+  code: string;
+  callback: (newCode: string) => void;
+}
+
+export default class Editor extends React.Component<EditorProps> {
+  constructor(props: EditorProps) {
+    super(props);
+    this.handleOnChange = this.handleOnChange.bind(this);
+  }
+
+  handleOnChange(e: React.ChangeEvent<HTMLTextAreaElement>): void {
+    const code = e.target.value;
+    this.props.callback(code);
+  }
+
   render() {
     return (
       <div className="Editor">
@@ -10,7 +25,7 @@ export default class Editor extends React.Component {
             <input className="button is-primary" type="button" value="Render" />
           </p>
         </div>
-        <textarea />
+        <textarea value={this.props.code} onChange={this.handleOnChange} />
       </div>
     );
   }
