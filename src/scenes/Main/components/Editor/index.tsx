@@ -25,7 +25,12 @@ export default class Editor extends React.Component<EditorProps> {
             <input className="button is-primary" type="button" value="Render" />
           </p>
         </div>
-        <textarea value={this.props.code} onChange={this.handleOnChange} />
+        <textarea
+          className="textarea is-primary is-medium"
+          placeholder="Enter stackdraw code here"
+          value={this.props.code}
+          onChange={this.handleOnChange}
+        />
       </div>
     );
   }

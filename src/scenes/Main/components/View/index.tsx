@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './styles.css';
 
 interface ViewProps extends React.Props<{}> {
   renders: string[];
@@ -62,7 +63,7 @@ export default class View extends React.Component<ViewProps, ViewState> {
           </p>
         </div>
         <div className="ViewCanvas">
-          <textarea id="canvas" value={this.drawCanvas()} />
+          <textarea id="canvas" className="textarea" readOnly={true} value={this.drawCanvas()} />
         </div>
       </div>
     );
