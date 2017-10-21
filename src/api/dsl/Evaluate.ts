@@ -31,6 +31,10 @@ export default function evaluate(code: string): {frames: Frame[], errors: Error[
                 }
                 break;
             case 'push':
+                if (frames.length === 0) {
+                    errors.push(new Error('must have a frame to push to'));
+                    break;
+                }
                 const currentFrame = frames[frames.length - 1];
                 pushIntoFrame(currentFrame, sp, args);
                 sp++;
