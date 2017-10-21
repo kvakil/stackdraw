@@ -24,7 +24,7 @@ export default class Header extends React.Component {
             <div className="navbar-end">
               <div className="navbar-item">
                 <p className="control">
-                  <a href="https://github.com/kvakil/stackdraw/" className="button is-primary">
+                  <a href="https://github.com/kvakil/stackdraw/" className="button is-info">
                     View on Github
                   </a>
                 </p>
