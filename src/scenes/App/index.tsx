@@ -5,7 +5,7 @@ import Home from '../Home';
 import Main from '../Main';
 import './styles.css';
 
-class App extends React.Component {
+export default class App extends React.Component {
   render() {
     return (
       <div>
@@ -22,5 +22,3 @@ class App extends React.Component {
     );
   }
 }
-
-export default App;
