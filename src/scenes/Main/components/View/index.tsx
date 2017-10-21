@@ -14,6 +14,14 @@ export default class View extends React.Component<ViewProps, ViewState> {
     this.state = {currentFrame: 0};
   }
 
+  componentWillReceiveProps(nextProps: ViewProps): void {
+    const numFrames = this.props.renders.length;
+    if (this.state.currentFrame >= nextProps.renders.length ||
+        this.state.currentFrame === numFrames - 1) {
+      this.setState({currentFrame: nextProps.renders.length - 1});
+    }
+  }
+
   drawCanvas(): string {
     if (this.state.currentFrame < 0 ||
         this.state.currentFrame >= this.props.renders.length) {
