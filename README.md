@@ -6,7 +6,5 @@ A tool for drawing x86 stack diagrams.
 
 Currently stackdraw is under construction. The TODO list:
 
-* PlaintextRenderer
-* DSL
-* Frontend
+* Improve README
 * VectorRenderer
